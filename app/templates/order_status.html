@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Acompanhar pedido | Cupcakes C{% endblock %}
+{% block content %}
+<section class="tracking-page">
+  <div class="tracking-heading"><div><p class="eyebrow">Pedido #{{ order.id }}</p><h1 id="status-label">{{ status_label }}</h1><p class="tracking-message" id="status-message">{{ status_message }}</p></div></div>
+
+  <div class="tracking-layout">
+    <div class="tracking-main">
+      <section class="checkout-card status-card">
+        <h2>Acompanhe as etapas</h2>
+        <ol class="status-steps" aria-label="Etapas do pedido">
+          <li class="{% if stage >= 1 %}complete{% endif %}" data-stage="1"><span>1</span><div><strong>Pedido recebido</strong><small>Aceitação automática em 5 segundos</small></div></li>
+          <li class="{% if stage >= 2 %}complete{% endif %}" data-stage="2"><span>2</span><div><strong>Em preparo</strong><small>Preparo: 30 segundos</small></div></li>
+          <li class="{% if stage >= 3 %}complete{% endif %}" data-stage="3"><span>3</span><div><strong>Saiu para entrega</strong><small>Previsão: 1 minuto</small></div></li>
+          <li class="{% if stage >= 4 %}complete{% endif %}" data-stage="4"><span>4</span><div><strong>Entregue</strong><small>Concluído</small></div></li>
+        </ol>
+        <div class="countdown-box" id="countdown-box" {% if is_delivered %}hidden{% endif %}><span id="countdown-label">{{ countdown_label }}</span><strong><span id="remaining-time">{{ remaining_seconds }}</span> s</strong></div>
+        <p class="address-summary"><span class="muted">Endereço de entrega</span><strong>{{ delivery_address }}</strong></p>
+      </section>
+
+      <section class="courier-card" id="courier-card" {% if stage < 3 %}hidden{% endif %}><img src="{{ url_for('static', filename='images/demo-entrega.png') }}" alt="Motoboy saindo da confeitaria em direção a uma casa"><div><p class="eyebrow">Entrega</p><h2 id="courier-heading">{% if is_delivered %}Pedido chegou ao destino{% else %}O motoboy saiu da loja{% endif %}</h2></div></section>
+
+      <section class="checkout-card ordered-items"><h2>Itens deste pedido</h2>
+        {% for item in items %}<div class="checkout-item"><div><strong>{{ item.quantity }}× {{ item.name }}</strong>{% if item.flavors %}<small>{% for flavor in item.flavors %}{{ flavor.quantity }}× {{ flavor.name }}{% if not loop.last %}, {% endif %}{% endfor %}</small>{% endif %}</div><strong>{{ item.line_total_display }}</strong></div>{% endfor %}
+        <div class="checkout-total-row"><span>Pagamento</span><strong>{{ payment_display }}</strong></div>
+        <div class="checkout-total-row grand-total"><span>Total</span><strong>{{ total_display }}</strong></div>
+      </section>
+    </div>
+
+    <aside class="history-card"><h2>Compras anteriores</h2>
+      {% if previous_orders %}<ul class="history-list">{% for previous in previous_orders %}<li><div><strong>Pedido #{{ previous.id }}</strong><small>{{ previous.created_at }} · {{ previous.status_display }}</small></div><strong>{{ previous.total_display }} <small class="payment-method-label">· {{ previous.payment_display }}</small></strong></li>{% endfor %}</ul>
+      {% else %}<p class="muted">Você ainda não fez outros pedidos.</p>{% endif %}
+      <a class="secondary-button history-back" href="{{ url_for('main.catalog') }}">Voltar ao catálogo</a>
+    </aside>
+  </div>
+</section>
+<script>
+  let remaining = {{ remaining_seconds }};
+  const display = document.getElementById('remaining-time');
+  const countdownBox = document.getElementById('countdown-box');
+  const courierCard = document.getElementById('courier-card');
+  const pollUrl = {{ url_for('orders.progress', order_id=order.id)|tojson }};
+  let countdownTimer;
+  let progressTimer;
+  function applyProgress(data) {
+    document.getElementById('status-label').textContent = data.label;
+    document.getElementById('status-message').textContent = data.message;
+    document.getElementById('countdown-label').textContent = data.countdown_label;
+    remaining = data.remaining;
+    display.textContent = remaining;
+    countdownBox.hidden = data.delivered;
+    courierCard.hidden = data.stage < 3;
+    document.getElementById('courier-heading').textContent = data.delivered ? 'Pedido chegou ao destino' : 'O motoboy saiu da loja';
+    document.querySelectorAll('.status-steps [data-stage]').forEach((step) => {
+      step.classList.toggle('complete', Number(step.dataset.stage) <= data.stage);
+    });
+    if (data.delivered) {
+      window.clearInterval(countdownTimer);
+      window.clearInterval(progressTimer);
+    }
+  }
+  async function refreshProgress() {
+    try {
+      const response = await fetch(pollUrl, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+      if (response.ok) applyProgress(await response.json());
+    } catch (_) { /* Mantém a contagem local se a consulta momentânea falhar. */ }
+  }
+  if (!countdownBox.hidden) {
+    countdownTimer = window.setInterval(() => {
+      remaining = Math.max(0, remaining - 1);
+      display.textContent = remaining;
+    }, 1000);
+    progressTimer = window.setInterval(refreshProgress, 3000);
+  }
+</script>
+{% endblock %}

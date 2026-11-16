@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Entrar | Cupcakes C{% endblock %}
+{% block content %}
+<section class="login-layout">
+  <div class="login-copy">
+    <p class="eyebrow">Cupcakes C</p>
+    <h1>Do seu jeito, sempre delicioso.</h1>
+    <p class="intro">Escolha seus sabores favoritos e monte seu pedido.</p>
+    <div class="notice">
+      <strong>Privacidade</strong>
+      <p>Não pedimos senha nem coletamos dados pessoais.</p>
+    </div>
+  </div>
+
+  <div class="login-card">
+    <h2>Acessar o aplicativo</h2>
+    <p>Use a conta de exemplo para entrar.</p>
+    <button class="google-button" id="open-account-dialog" type="button">
+      <span class="google-mark" aria-hidden="true">G</span>
+      <span>Continuar com Google</span>
+    </button>
+    <p class="demo-warning"><span aria-hidden="true">*</span> Conta fictícia; não há conexão com o Google.</p>
+  </div>
+</section>
+
+<dialog class="account-dialog" id="account-dialog" aria-labelledby="account-dialog-title">
+  <div class="account-card">
+    <button class="modal-close" id="close-account-dialog" type="button" aria-label="Fechar">×</button>
+    <div class="account-brand" aria-hidden="true">C</div>
+    <h2 id="account-dialog-title">Escolha uma conta</h2>
+    <p class="account-intro">Selecione a conta para continuar.</p>
+
+    <form id="demo-account-form" action="{{ url_for('main.demo_login') }}" method="post">
+      <button class="account-choice" id="demo-account-button" type="submit">
+        <span class="avatar" aria-hidden="true">C</span>
+        <span class="account-identity">
+          <strong>Cliente</strong>
+          <span>cliente@cupcakesc.com</span>
+        </span>
+        <span class="account-arrow" aria-hidden="true">›</span>
+      </button>
+    </form>
+
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("account-dialog");
+  const openButton = document.getElementById("open-account-dialog");
+  const closeButton = document.getElementById("close-account-dialog");
+  const form = document.getElementById("demo-account-form");
+  const accountButton = document.getElementById("demo-account-button");
+
+  openButton.addEventListener("click", () => dialog.showModal());
+  closeButton.addEventListener("click", () => dialog.close());
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    accountButton.disabled = true;
+    accountButton.querySelector(".account-identity").innerHTML =
+      "<strong>Entrando...</strong><span>Aguarde um instante</span>";
+    window.setTimeout(() => form.submit(), 900);
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Perfil | Cupcakes C{% endblock %}
+{% block content %}
+<section class="profile-page">
+  <p class="eyebrow">Sua conta</p>
+  <h1>Perfil</h1>
+  <div class="profile-card">
+    <span class="profile-avatar" aria-hidden="true">C</span>
+    <div><h2>{{ config.DEMO_CUSTOMER_NAME }}</h2><p>{{ config.DEMO_CUSTOMER_EMAIL }}</p></div>
+  </div>
+  <section class="theme-preference" aria-labelledby="theme-title">
+    <div><h2 id="theme-title">Aparência</h2><p>Escolha como prefere visualizar o aplicativo.</p></div>
+    <button type="button" class="theme-switch" id="theme-switch" role="switch" aria-checked="false" aria-label="Ativar tema escuro">
+      <span class="theme-switch-track" aria-hidden="true">
+        <svg class="theme-icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+        <svg class="theme-icon-moon" viewBox="0 0 24 24"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"/></svg>
+        <span class="theme-switch-thumb"></span>
+      </span>
+    </button>
+  </section>
+  <a class="text-link profile-exit" href="{{ url_for('main.home') }}">Sair da conta</a>
+</section>
+<script>
+  const themeSwitch = document.getElementById('theme-switch');
+  function syncThemeControl() {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    themeSwitch.setAttribute('aria-checked', String(dark));
+    themeSwitch.setAttribute('aria-label', dark ? 'Desativar tema escuro' : 'Ativar tema escuro');
+  }
+  themeSwitch.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = nextTheme;
+    try { localStorage.setItem('cupcakesc-theme', nextTheme); } catch (_) { /* A preferência ainda vale nesta página. */ }
+    syncThemeControl();
+  });
+  syncThemeControl();
+</script>
+{% endblock %}

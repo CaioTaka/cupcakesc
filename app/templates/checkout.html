@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Finalizar pedido | Cupcakes C{% endblock %}
+{% block content %}
+<section class="checkout-page">
+  <a class="back-link" href="{{ url_for('main.cart') }}">← Voltar ao carrinho</a>
+  <h1>Revisar pedido</h1>
+  <p class="checkout-intro">Confira os itens e o endereço antes de confirmar.</p>
+
+  <div class="checkout-layout">
+    <div class="checkout-main">
+      <section class="checkout-card">
+        <h2>Endereço</h2>
+        <div class="address-row"><span class="address-icon" aria-hidden="true">⌂</span><div><span class="muted">Loja</span><strong>{{ pickup_address }}</strong></div></div>
+        <div class="address-row"><span class="address-icon" aria-hidden="true">⌖</span><div><span class="muted">Entrega</span><strong>{{ delivery_address }}</strong></div>
+          <details class="address-info"><summary aria-label="Informações sobre o endereço">i</summary><p>Endereço fixo de exemplo. O app não acessa a localização do dispositivo nem pede seu endereço.</p></details>
+        </div>
+      </section>
+
+      <section class="checkout-card payment-card">
+        <div><h2>Forma de pagamento</h2></div>
+        <div class="payment-options" role="group" aria-label="Escolha uma forma de pagamento demonstrativa">
+          <button type="button" class="payment-option selected" data-method="credit" aria-pressed="true"><span aria-hidden="true">▰</span> Crédito</button>
+          <button type="button" class="payment-option" data-method="debit" aria-pressed="false"><span aria-hidden="true">▱</span> Débito</button>
+          <button type="button" class="payment-option" data-method="pix" aria-pressed="false"><span aria-hidden="true">▦</span> Pix</button>
+        </div>
+        <div class="payment-preview" id="card-preview"><div class="demo-card-number"><span class="muted">Cartão · <span id="card-kind">Crédito</span></span><strong>•••• &nbsp;•••• &nbsp;•••• &nbsp;1234</strong></div></div>
+        <div class="payment-preview" id="pix-preview" hidden><div class="pix-demo"><div><span class="muted">Chave Pix de exemplo</span><code id="pix-key">{{ pix_key }}</code></div><button class="secondary-button" type="button" id="copy-pix">Copiar chave</button></div></div>
+        <p class="demo-disclaimer">Pagamento de exemplo: nenhuma cobrança ou dado financeiro será enviado.</p>
+        <span class="copy-feedback" id="copy-feedback" role="status" aria-live="polite"></span>
+      </section>
+    </div>
+
+    <aside class="checkout-summary">
+      <h2>Resumo do pedido</h2>
+      {% for item in items %}<div class="checkout-item"><span>{{ item.quantity }}× {{ item.name }}</span><strong>{{ item.line_total }}</strong></div>{% endfor %}
+      <div class="checkout-total-row"><span>Subtotal</span><strong>{{ subtotal_display }}</strong></div>
+      <div class="checkout-total-row"><span>Frete</span><strong>{{ shipping_display }}</strong></div>
+      <div class="checkout-total-row grand-total"><span>Total</span><strong>{{ total_display }}</strong></div>
+      <form action="{{ url_for('orders.confirm_order') }}" method="post"><input type="hidden" name="payment_method" id="selected-payment-method" value="credit"><button class="primary-button confirm-order" type="submit">Confirmar pedido</button></form>
+    </aside>
+  </div>
+</section>
+<script>
+  const paymentButtons = document.querySelectorAll('.payment-option');
+  const cardPreview = document.getElementById('card-preview');
+  const pixPreview = document.getElementById('pix-preview');
+  const cardKind = document.getElementById('card-kind');
+  paymentButtons.forEach((button) => button.addEventListener('click', () => {
+    paymentButtons.forEach((option) => {
+      const selected = option === button;
+      option.classList.toggle('selected', selected);
+      option.setAttribute('aria-pressed', String(selected));
+    });
+    const isPix = button.dataset.method === 'pix';
+    document.getElementById('selected-payment-method').value = button.dataset.method;
+    cardPreview.hidden = isPix;
+    pixPreview.hidden = !isPix;
+    if (!isPix) cardKind.textContent = button.dataset.method === 'debit' ? 'Débito' : 'Crédito';
+    document.getElementById('copy-feedback').textContent = '';
+  }));
+
+  const copyButton = document.getElementById('copy-pix');
+  copyButton.addEventListener('click', async () => {
+    const key = document.getElementById('pix-key').textContent.trim();
+    const feedback = document.getElementById('copy-feedback');
+    try {
+      await navigator.clipboard.writeText(key);
+      feedback.textContent = 'Chave copiada.';
+    } catch (_) {
+      const field = document.createElement('textarea');
+      field.value = key; document.body.appendChild(field); field.select();
+      document.execCommand('copy'); field.remove();
+      feedback.textContent = 'Chave copiada.';
+    }
+  });
+</script>
+{% endblock %}

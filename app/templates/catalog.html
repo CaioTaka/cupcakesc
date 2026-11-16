@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Início | Cupcakes C{% endblock %}
+{% block content %}
+<section class="catalog-welcome">
+  <div class="welcome-heading">
+    <div>
+      <p class="eyebrow">Olá, Cliente! · catálogo</p>
+      <h1>O que você deseja hoje?</h1>
+    </div>
+    <a class="text-link" href="{{ url_for('main.home') }}">Sair</a>
+  </div>
+
+  <div class="account-demo">
+    <span class="demo-label">CONTA ILUSTRATIVA</span>
+    <span class="demo-account-name">{{ config.DEMO_CUSTOMER_NAME }}</span>
+    <span class="demo-account-email">{{ config.DEMO_CUSTOMER_EMAIL }}</span>
+  </div>
+
+  <section class="menu-section" aria-labelledby="combos-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Para compartilhar</p><h2 id="combos-title">Combos</h2></div>
+      <span class="section-hint">2 opções</span>
+    </div>
+    <div class="product-grid combo-grid">
+      {% for item in combos %}
+      <article class="product-card combo-card">
+        <div class="product-art combo-art">
+          <img class="combo-photo" src="{{ url_for('static', filename='images/' + item.image) }}" alt="{{ item.name }} com cupcakes variados">
+        </div>
+        <div class="product-copy">
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+          <strong class="price">{{ item.price_display }}</strong>
+          <a class="primary-button product-action" href="{{ url_for('main.choose_combo', units=item.units) }}">Escolher sabores</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="menu-section" aria-labelledby="cupcakes-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Escolha seu favorito</p><h2 id="cupcakes-title">Cupcakes avulsos</h2></div>
+      <span class="section-hint">6 sabores · R$ 10 cada</span>
+    </div>
+    <div class="product-grid">
+      {% for item in cupcakes %}
+      <article class="product-card">
+        <div class="product-art">
+          <img class="product-photo" src="{{ url_for('static', filename='images/' + item.image) }}" alt="Cupcake de {{ item.name }}">
+        </div>
+        <div class="product-copy">
+          <h3>{{ item.name }}</h3>
+          <p>Unidade avulsa</p>
+          <strong class="price">{{ item.price_display }}</strong>
+          <form action="{{ url_for('main.add_single', flavor_id=item.id) }}" method="post">
+            <button class="primary-button product-action" type="submit">Adicionar ao carrinho</button>
+          </form>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endblock %}

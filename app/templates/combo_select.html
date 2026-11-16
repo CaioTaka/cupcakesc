@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Editar sabores{% else %}Escolher sabores{% endif %} | Cupcakes C{% endblock %}
+{% block content %}
+<section class="selection-page">
+  <a class="back-link" href="{{ url_for('main.cart') if editing else url_for('main.catalog') }}">← {% if editing %}Voltar ao carrinho{% else %}Voltar ao catálogo{% endif %}</a>
+  <div class="selection-heading">
+    <div>
+      <p class="eyebrow">{% if editing %}Edite seu combo{% else %}Personalize seu combo{% endif %}</p>
+      <h1>{{ combo.name }}</h1>
+      <p class="muted">Selecione os sabores para preencher sua caixa.</p>
+      {% if editing %}
+      <p class="muted">A alteração será aplicada às {{ editing_quantity }} caixas desta linha.</p>
+      {% endif %}
+    </div>
+    <strong class="price selection-price">{{ combo.price_display }}</strong>
+  </div>
+
+  <div class="selection-counter" role="status" aria-live="polite">
+    <span id="selection-count">0</span> de {{ combo.units }} cupcakes selecionados
+  </div>
+  {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+
+  <form id="flavor-selection" method="post">
+    {% if editing %}<input type="hidden" name="edit_index" value="{{ edit_index }}">{% endif %}
+    <div class="flavor-grid" data-target="{{ combo.units }}">
+      {% for item in cupcakes %}
+      <article class="flavor-card">
+        <img src="{{ url_for('static', filename='images/' + item.image) }}" alt="Imagem ilustrativa do cupcake de {{ item.name }}">
+        <div class="flavor-info"><h2>{{ item.name }}</h2><span>{{ item.price_display }} avulso</span></div>
+        <div class="quantity-control" aria-label="Quantidade de {{ item.name }}">
+          <button type="button" class="quantity-step" data-delta="-1" aria-label="Remover um {{ item.name }}">−</button>
+          <input name="flavor_{{ item.id }}" class="flavor-quantity" type="text" inputmode="numeric" value="{{ quantities[item.id] }}" readonly aria-label="Quantidade de {{ item.name }}">
+          <button type="button" class="quantity-step" data-delta="1" aria-label="Adicionar um {{ item.name }}">+</button>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="selection-error" id="selection-error" aria-live="polite"></p>
+    <div class="selection-footer">
+      <span class="muted">Escolha exatamente {{ combo.units }} unidades.</span>
+      <button id="add-combo-button" class="primary-button" type="submit" disabled>{% if editing %}Salvar alterações{% else %}Adicionar caixa ao carrinho{% endif %}</button>
+    </div>
+  </form>
+</section>
+<script>
+  const selection = document.getElementById("flavor-selection");
+  const target = Number(document.querySelector(".flavor-grid").dataset.target);
+  const quantityInputs = Array.from(document.querySelectorAll(".flavor-quantity"));
+  const countOutput = document.getElementById("selection-count");
+  const errorOutput = document.getElementById("selection-error");
+  const submitButton = document.getElementById("add-combo-button");
+
+  function updateSelection() {
+    const total = quantityInputs.reduce((sum, input) => sum + Number(input.value || 0), 0);
+    countOutput.textContent = total;
+    const remaining = target - total;
+    submitButton.disabled = total !== target;
+    if (remaining > 0) {
+      errorOutput.textContent = "Escolha mais " + remaining + (remaining === 1 ? " cupcake." : " cupcakes.");
+    } else if (remaining < 0) {
+      errorOutput.textContent = "Remova " + Math.abs(remaining) + " unidade(s) para continuar.";
+    } else {
+      errorOutput.textContent = "";
+    }
+  }
+
+  document.querySelectorAll(".quantity-step").forEach((button) => {
+    button.addEventListener("click", () => {
+      const input = button.parentElement.querySelector(".flavor-quantity");
+      const current = Number(input.value || 0);
+      const total = quantityInputs.reduce((sum, field) => sum + Number(field.value || 0), 0);
+      const delta = Number(button.dataset.delta);
+      if (delta < 0 && current > 0) input.value = current - 1;
+      if (delta > 0 && total < target) input.value = current + 1;
+      updateSelection();
+    });
+  });
+
+  selection.addEventListener("submit", (event) => {
+    const total = quantityInputs.reduce((sum, input) => sum + Number(input.value || 0), 0);
+    if (total !== target) {
+      event.preventDefault();
+      updateSelection();
+    }
+  });
+
+  updateSelection();
+</script>
+{% endblock %}

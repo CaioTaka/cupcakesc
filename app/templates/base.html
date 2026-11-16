@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Demonstração acadêmica do aplicativo Cupcakes C">
+  <title>{% block title %}Cupcakes C{% endblock %}</title>
+  <script>
+    try { document.documentElement.dataset.theme = localStorage.getItem('cupcakesc-theme') || 'light'; }
+    catch (_) { document.documentElement.dataset.theme = 'light'; }
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('main.catalog') }}">Cupcakes C</a>
+    <nav class="topnav" aria-label="Informações do aplicativo"><span class="demo-label">DEMO ACADÊMICA</span></nav>
+  </header>
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+  {% if request.endpoint == 'main.catalog' %}<footer>Projeto Integrador Transdisciplinar II · São José dos Campos</footer>{% endif %}
+  {% if request.endpoint != 'main.home' %}
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <a href="{{ url_for('main.catalog') }}" class="bottom-nav-item {% if request.endpoint in ['main.catalog', 'main.choose_combo'] %}active{% endif %}" {% if request.endpoint in ['main.catalog', 'main.choose_combo'] %}aria-current="page"{% endif %}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5z"/><path d="M9 21v-7h6v7"/></svg><span>Catálogo</span>
+    </a>
+    <a href="{{ url_for('orders.history') }}" class="bottom-nav-item {% if request.endpoint == 'orders.history' or request.endpoint == 'orders.track_order' %}active{% endif %}" {% if request.endpoint == 'orders.history' or request.endpoint == 'orders.track_order' %}aria-current="page"{% endif %}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a2 2 0 0 1 2 2v16l-7-4-7 4V5a2 2 0 0 1 2-2Z"/><path d="M9 8h6M9 11h6"/></svg><span>Meus pedidos</span>
+    </a>
+    <a href="{{ url_for('main.cart') }}" class="bottom-nav-item {% if request.endpoint in ['main.cart', 'orders.checkout'] %}active{% endif %}" {% if request.endpoint in ['main.cart', 'orders.checkout'] %}aria-current="page"{% endif %}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 1.9-1.4L22 9H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span>Carrinho{% if cart_count %} · {{ cart_count }}{% endif %}</span>
+    </a>
+    <a href="{{ url_for('main.profile') }}" class="bottom-nav-item {% if request.endpoint == 'main.profile' %}active{% endif %}" {% if request.endpoint == 'main.profile' %}aria-current="page"{% endif %}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Perfil</span>
+    </a>
+  </nav>
+  {% endif %}
+</body>
+</html>
