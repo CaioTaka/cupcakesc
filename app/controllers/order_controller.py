@@ -44,12 +44,12 @@ def order_state(created_at):
     prep_ends = accept_seconds + prep_seconds
     delivery_ends = prep_ends + delivery_seconds
     if elapsed < accept_seconds:
-        return {"status": "recebido", "label": "Pedido recebido", "message": "Seu pedido será aceito automaticamente em instantes.", "countdown_label": "Confirmação automática", "remaining": accept_seconds - elapsed, "stage": 1}
+        return {"status": "recebido", "label": "Pedido recebido", "message": "Seu pedido será aceito automaticamente em instantes.", "countdown_label": "Confirmação automática", "remaining": accept_seconds - elapsed, "stage": 1, "image": None, "image_alt": ""}
     if elapsed < prep_ends:
-        return {"status": "em_preparo", "label": "Pedido aceito · em preparo", "message": "A confeitaria está preparando seus cupcakes.", "countdown_label": "Previsão para sair da loja", "remaining": prep_ends - elapsed, "stage": 2}
+        return {"status": "em_preparo", "label": "Pedido aceito · em preparo", "message": "A confeitaria está preparando seus cupcakes.", "countdown_label": "Previsão para sair da loja", "remaining": prep_ends - elapsed, "stage": 2, "image": "demo-preparo.png", "image_alt": "Confeiteira preparando massa e cupcakes na cozinha da loja"}
     if elapsed < delivery_ends:
-        return {"status": "saiu_para_entrega", "label": "Saiu para entrega", "message": "O motoboy está a caminho.", "countdown_label": "Previsão de entrega", "remaining": delivery_ends - elapsed, "stage": 3}
-    return {"status": "entregue", "label": "Pedido entregue", "message": "Pedido concluído. Obrigado!", "countdown_label": "Status", "remaining": 0, "stage": 4}
+        return {"status": "saiu_para_entrega", "label": "Saiu para entrega", "message": "O motoboy está a caminho.", "countdown_label": "Previsão de entrega", "remaining": delivery_ends - elapsed, "stage": 3, "image": "demo-entrega.png", "image_alt": "Motoboy saindo da confeitaria em direção a uma casa"}
+    return {"status": "entregue", "label": "Pedido entregue", "message": "Pedido concluído. Obrigado!", "countdown_label": "Status", "remaining": 0, "stage": 4, "image": "demo-entregue.png", "image_alt": "Motoboy entrega uma caixa rosa de cupcakes para uma cliente"}
 
 
 @orders_bp.get("/history")
@@ -59,7 +59,7 @@ def history():
     if browser_id:
         db = get_db()
         rows = db.execute(
-            "SELECT id, total_cents, payment_method, status, created_at FROM orders WHERE browser_id = ? ORDER BY id DESC",
+            "SELECT id, total_cents, payment_method, status, created_at, evaluation_score, evaluation_comment FROM orders WHERE browser_id = ? ORDER BY id DESC",
             (browser_id,),
         ).fetchall()
         status_names = {
@@ -77,6 +77,7 @@ def history():
             order["status_display"] = status_names[current_status]
             order["total_display"] = format_brl(order["total_cents"])
             order["payment_display"] = {"credit": "Crédito", "debit": "Débito", "pix": "Pix"}.get(order["payment_method"], "Não informado")
+            order["is_delivered"] = current_status == "entregue"
             orders.append(order)
         db.commit()
     return render_template("order_history.html", orders=orders)
@@ -215,6 +216,54 @@ def track_order(order_id):
         is_delivered=(status == "entregue"),
         previous_orders=previous_orders,
         delivery_address=current_app.config["DELIVERY_ADDRESS"],
+        status_image=state["image"],
+        status_image_alt=state["image_alt"],
+    )
+
+
+@orders_bp.route("/<int:order_id>/review", methods=["GET", "POST"])
+def review_order(order_id):
+    browser_id = session.get("demo_browser_id")
+    if not browser_id:
+        abort(404)
+    db = get_db()
+    order = db.execute(
+        "SELECT * FROM orders WHERE id = ? AND browser_id = ?", (order_id, browser_id)
+    ).fetchone()
+    if order is None:
+        abort(404)
+    if order_progress(order["created_at"]) != "entregue":
+        abort(403)
+
+    error = None
+    if request.method == "POST":
+        try:
+            score = int(request.form.get("score", ""))
+        except (TypeError, ValueError):
+            score = 0
+        comment = request.form.get("comment", "").strip()
+        if score not in range(1, 6):
+            error = "Escolha uma nota de 1 a 5 estrelas."
+        elif len(comment) > 1000:
+            error = "O comentário deve ter no máximo 1.000 caracteres."
+        else:
+            db.execute(
+                "UPDATE orders SET evaluation_score = ?, evaluation_comment = ?, evaluated_at = ? WHERE id = ? AND browser_id = ?",
+                (score, comment or None, datetime.now(timezone.utc).isoformat(timespec="seconds"), order_id, browser_id),
+            )
+            db.commit()
+            return redirect(url_for("orders.history"))
+
+    items = json.loads(order["items_json"])
+    for item in items:
+        item["line_total_display"] = format_brl(item["unit_price_cents"] * item["quantity"])
+    return render_template(
+        "review_order.html",
+        order=order,
+        items=items,
+        total_display=format_brl(order["total_cents"]),
+        payment_display={"credit": "Crédito", "debit": "Débito", "pix": "Pix"}.get(order["payment_method"], "Não informado"),
+        error=error,
     )
 
 
@@ -239,4 +288,6 @@ def progress(order_id):
         "remaining": state["remaining"],
         "stage": state["stage"],
         "delivered": state["status"] == "entregue",
+        "image": state["image"],
+        "image_alt": state["image_alt"],
     })

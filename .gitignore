@@ -6,4 +6,5 @@ instance/*.sqlite3
 instance/*.db
 .env
 .vscode/
+/work/pdfview/
 .DS_Store

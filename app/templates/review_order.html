@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Avaliar pedido #{{ order.id }} | Cupcakes C{% endblock %}
+{% block content %}
+<section class="review-page">
+  <a class="back-link" href="{{ url_for('orders.history') }}">← Voltar aos meus pedidos</a>
+  <p class="eyebrow">Sua opinião</p>
+  <h1>Avaliar pedido #{{ order.id }}</h1>
+
+  <section class="checkout-card review-order-summary" aria-label="Resumo do pedido">
+    <div class="review-summary-heading"><span>Data do pedido</span><strong>{{ order.created_at }}</strong></div>
+    <div class="review-summary-heading"><span>Valor</span><strong>{{ total_display }}</strong></div>
+    <div class="review-summary-heading"><span>Forma de pagamento</span><strong>{{ payment_display }}</strong></div>
+    <h2>Itens do pedido</h2>
+    {% for item in items %}
+    <div class="checkout-item"><div><strong>{{ item.quantity }}× {{ item.name }}</strong>{% if item.flavors %}<small>{% for flavor in item.flavors %}{{ flavor.quantity }}× {{ flavor.name }}{% if not loop.last %}, {% endif %}{% endfor %}</small>{% endif %}</div><strong>{{ item.line_total_display }}</strong></div>
+    {% endfor %}
+  </section>
+
+  <form class="checkout-card review-form" method="post">
+    {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+    <fieldset class="star-rating">
+      <legend>Como foi sua experiência? <span aria-hidden="true">*</span></legend>
+      <div class="star-options" role="radiogroup" aria-label="Nota de 1 a 5 estrelas">
+        {% for value in range(5, 0, -1) %}
+        <input type="radio" id="rating-{{ value }}" name="score" value="{{ value }}" {% if order.evaluation_score == value %}checked{% endif %} required>
+        <label for="rating-{{ value }}" aria-label="{{ value }} estrela{% if value != 1 %}s{% endif %}">★</label>
+        {% endfor %}
+      </div>
+      <small>Selecione de 1 a 5 estrelas.</small>
+    </fieldset>
+    <label class="comment-label" for="review-comment">Comentário <span class="muted">(opcional)</span></label>
+    <textarea id="review-comment" name="comment" rows="4" maxlength="1000" placeholder="Se quiser, conte um pouco sobre sua experiência.">{{ order.evaluation_comment or '' }}</textarea>
+    <button class="primary-button" type="submit">{% if order.evaluation_score %}Atualizar avaliação{% else %}Confirmar avaliação{% endif %}</button>
+  </form>
+</section>
+{% endblock %}

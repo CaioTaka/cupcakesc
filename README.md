@@ -6,7 +6,7 @@ Aplicação web demonstrativa desenvolvida para o Projeto Integrador Transdiscip
 
 A tela de entrada simula uma autenticação sem chamar o Google e sem pedir e-mail ou senha. O catálogo inicial usa os produtos e valores apresentados no protótipo do Projeto Integrador I. O projeto usa Flask e SQLite local.
 
-A aplicação é apenas uma demonstração acadêmica: não solicita dados pessoais reais, não processa pagamentos reais e não solicita localização. O pedido demonstrativo guarda um nome fixo e um resumo do pedido para mostrar o histórico.
+A aplicação é apenas uma demonstração acadêmica: não solicita dados pessoais reais, não processa pagamentos reais e não solicita localização. O pedido demonstrativo guarda um nome fixo, um resumo do pedido e a categoria de pagamento para mostrar o histórico. Depois da entrega, é possível registrar uma nota de 1 a 5 e um comentário opcional para cada pedido.
 
 ## Estrutura
 
@@ -68,4 +68,4 @@ O catálogo permite adicionar cupcakes avulsos ou escolher a quantidade de cada 
 
 Os valores de produtos, frete demonstrativo e tempos podem ser alterados em app/config.py. A finalização simulada grava apenas um resumo demonstrativo do pedido no SQLite local; não salva dados de pagamento nem localização. O identificador de sessão do navegador separa o histórico de cada perfil de navegador usado nos testes.
 
-Na tela de checkout, os endereços e formas de pagamento são ilustrativos. A chave `cupcakesc123` é fictícia e serve somente para demonstrar a cópia do texto; não há QR Code nem integração Pix. O pedido guarda apenas a categoria selecionada (Crédito, Débito ou Pix), sem dados financeiros. Os estados avançam automaticamente, com consulta em segundo plano para evitar recarregar a página.
+Na tela de checkout, os endereços e formas de pagamento são ilustrativos. A chave `cupcakesc123` é fictícia e serve somente para demonstrar a cópia do texto; não há QR Code nem integração Pix. O pedido guarda apenas a categoria selecionada (Crédito, Débito ou Pix), sem dados financeiros. Os estados avançam automaticamente, com consulta em segundo plano para evitar recarregar a página. A configuração atual usa 15 segundos de preparo e 30 segundos para a etapa de entrega. As imagens de preparo e entrega concluída são ilustrativas; `demo-entrega.png` representa a etapa “saiu para entrega”.

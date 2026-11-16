@@ -42,6 +42,12 @@ def init_db():
         db.execute("ALTER TABLE orders ADD COLUMN browser_id TEXT NOT NULL DEFAULT ''")
     if "payment_method" not in existing_columns:
         db.execute("ALTER TABLE orders ADD COLUMN payment_method TEXT")
+    if "evaluation_score" not in existing_columns:
+        db.execute("ALTER TABLE orders ADD COLUMN evaluation_score INTEGER")
+    if "evaluation_comment" not in existing_columns:
+        db.execute("ALTER TABLE orders ADD COLUMN evaluation_comment TEXT")
+    if "evaluated_at" not in existing_columns:
+        db.execute("ALTER TABLE orders ADD COLUMN evaluated_at TEXT")
     db.execute("CREATE INDEX IF NOT EXISTS idx_orders_browser_created ON orders(browser_id, created_at)")
     db.commit()
     db.close()

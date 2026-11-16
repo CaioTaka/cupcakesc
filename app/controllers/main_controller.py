@@ -158,9 +158,9 @@ def cart_context():
     shipping = current_app.config["SHIPPING_CENTS"] if items else 0
     return {
         "items": items,
-        subtotal_display=format_brl(subtotal),
-        shipping_display=format_brl(shipping),
-        total_display=format_brl(subtotal + shipping),
+        "subtotal_display": format_brl(subtotal),
+        "shipping_display": format_brl(shipping),
+        "total_display": format_brl(subtotal + shipping),
     }
 
 

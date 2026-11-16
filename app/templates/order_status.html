@@ -10,15 +10,15 @@
         <h2>Acompanhe as etapas</h2>
         <ol class="status-steps" aria-label="Etapas do pedido">
           <li class="{% if stage >= 1 %}complete{% endif %}" data-stage="1"><span>1</span><div><strong>Pedido recebido</strong><small>Aceitação automática em 5 segundos</small></div></li>
-          <li class="{% if stage >= 2 %}complete{% endif %}" data-stage="2"><span>2</span><div><strong>Em preparo</strong><small>Preparo: 30 segundos</small></div></li>
-          <li class="{% if stage >= 3 %}complete{% endif %}" data-stage="3"><span>3</span><div><strong>Saiu para entrega</strong><small>Previsão: 1 minuto</small></div></li>
+          <li class="{% if stage >= 2 %}complete{% endif %}" data-stage="2"><span>2</span><div><strong>Em preparo</strong><small>Preparo: {{ config.PREPARATION_SECONDS }} segundos</small></div></li>
+          <li class="{% if stage >= 3 %}complete{% endif %}" data-stage="3"><span>3</span><div><strong>Saiu para entrega</strong><small>Previsão: {{ config.DELIVERY_ESTIMATE_SECONDS }} segundos</small></div></li>
           <li class="{% if stage >= 4 %}complete{% endif %}" data-stage="4"><span>4</span><div><strong>Entregue</strong><small>Concluído</small></div></li>
         </ol>
         <div class="countdown-box" id="countdown-box" {% if is_delivered %}hidden{% endif %}><span id="countdown-label">{{ countdown_label }}</span><strong><span id="remaining-time">{{ remaining_seconds }}</span> s</strong></div>
         <p class="address-summary"><span class="muted">Endereço de entrega</span><strong>{{ delivery_address }}</strong></p>
       </section>
 
-      <section class="courier-card" id="courier-card" {% if stage < 3 %}hidden{% endif %}><img src="{{ url_for('static', filename='images/demo-entrega.png') }}" alt="Motoboy saindo da confeitaria em direção a uma casa"><div><p class="eyebrow">Entrega</p><h2 id="courier-heading">{% if is_delivered %}Pedido chegou ao destino{% else %}O motoboy saiu da loja{% endif %}</h2></div></section>
+      <section class="courier-card" id="courier-card" {% if stage < 2 %}hidden{% endif %}><img id="status-illustration" {% if status_image %}src="{{ url_for('static', filename='images/' + status_image) }}"{% endif %} alt="{{ status_image_alt }}"><div><p class="eyebrow">Pedido</p><h2 id="courier-heading">{% if stage == 2 %}A confeitaria está preparando seu pedido{% elif is_delivered %}Pedido chegou ao destino{% else %}O motoboy saiu da loja{% endif %}</h2></div></section>
 
       <section class="checkout-card ordered-items"><h2>Itens deste pedido</h2>
         {% for item in items %}<div class="checkout-item"><div><strong>{{ item.quantity }}× {{ item.name }}</strong>{% if item.flavors %}<small>{% for flavor in item.flavors %}{{ flavor.quantity }}× {{ flavor.name }}{% if not loop.last %}, {% endif %}{% endfor %}</small>{% endif %}</div><strong>{{ item.line_total_display }}</strong></div>{% endfor %}
@@ -39,6 +39,7 @@
   const display = document.getElementById('remaining-time');
   const countdownBox = document.getElementById('countdown-box');
   const courierCard = document.getElementById('courier-card');
+  const statusIllustration = document.getElementById('status-illustration');
   const pollUrl = {{ url_for('orders.progress', order_id=order.id)|tojson }};
   let countdownTimer;
   let progressTimer;
@@ -49,8 +50,10 @@
     remaining = data.remaining;
     display.textContent = remaining;
     countdownBox.hidden = data.delivered;
-    courierCard.hidden = data.stage < 3;
-    document.getElementById('courier-heading').textContent = data.delivered ? 'Pedido chegou ao destino' : 'O motoboy saiu da loja';
+    courierCard.hidden = data.stage < 2;
+    statusIllustration.src = data.image ? ({{ url_for('static', filename='images/')|tojson }} + data.image) : '';
+    statusIllustration.alt = data.image_alt || '';
+    document.getElementById('courier-heading').textContent = data.stage === 2 ? 'A confeitaria está preparando seu pedido' : (data.delivered ? 'Pedido chegou ao destino' : 'O motoboy saiu da loja');
     document.querySelectorAll('.status-steps [data-stage]').forEach((step) => {
       step.classList.toggle('complete', Number(step.dataset.stage) <= data.stage);
     });

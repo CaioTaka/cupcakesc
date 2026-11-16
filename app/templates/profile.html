@@ -18,6 +18,16 @@
       </span>
     </button>
   </section>
+  <section class="profile-detail-list" aria-label="Dados demonstrativos da conta">
+    <article class="profile-detail-card">
+      <span class="profile-detail-icon" aria-hidden="true">⌖</span>
+      <div><h2>Endereços</h2><p>{{ config.DELIVERY_ADDRESS }}</p><small>Endereço fixo para esta demonstração.</small></div>
+    </article>
+    <article class="profile-detail-card">
+      <span class="profile-detail-icon" aria-hidden="true">▤</span>
+      <div><h2>Formas de pagamento</h2><p>Cartão demonstrativo ···· {{ config.DEMO_CARD_LAST4 }}</p><small>Nenhum dado real de cartão é usado.</small></div>
+    </article>
+  </section>
   <a class="text-link profile-exit" href="{{ url_for('main.home') }}">Sair da conta</a>
 </section>
 <script>

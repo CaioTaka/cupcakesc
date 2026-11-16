@@ -11,12 +11,13 @@ class Config:
     # Dados fixos e fictícios usados apenas na demonstração.
     DEMO_CUSTOMER_NAME = "Cliente"
     DEMO_CUSTOMER_EMAIL = "cliente@cupcakesc.com"
+    DEMO_CARD_LAST4 = "1234"
     PICKUP_ADDRESS = "Shopping Vale Sul, São José dos Campos - SP"
     DELIVERY_ADDRESS = "Prefeitura de São José dos Campos - SP"
     PIX_DEMO_KEY = "cupcakesc123"
     ORDER_AUTO_ACCEPT_SECONDS = 5
-    PREPARATION_SECONDS = 30
-    DELIVERY_ESTIMATE_SECONDS = 60
+    PREPARATION_SECONDS = 15
+    DELIVERY_ESTIMATE_SECONDS = 30
     SHIPPING_CENTS = 1500
 
     # Catálogo e preços ficam centralizados aqui para facilitar alterações.
