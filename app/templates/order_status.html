@@ -28,7 +28,7 @@
     </div>
 
     <aside class="history-card"><h2>Compras anteriores</h2>
-      {% if previous_orders %}<ul class="history-list">{% for previous in previous_orders %}<li><div><strong>Pedido #{{ previous.id }}</strong><small>{{ previous.created_at }} · {{ previous.status_display }}</small></div><strong>{{ previous.total_display }} <small class="payment-method-label">· {{ previous.payment_display }}</small></strong></li>{% endfor %}</ul>
+      {% if previous_orders %}<ul class="history-list">{% for previous in previous_orders %}<li><div><strong>Pedido #{{ previous.id }}</strong><small>{{ previous.created_at_display }} · {{ previous.status_display }}</small></div><strong>{{ previous.total_display }} <small class="payment-method-label">· {{ previous.payment_display }}</small></strong></li>{% endfor %}</ul>
       {% else %}<p class="muted">Você ainda não fez outros pedidos.</p>{% endif %}
       <a class="secondary-button history-back" href="{{ url_for('main.catalog') }}">Voltar ao catálogo</a>
     </aside>

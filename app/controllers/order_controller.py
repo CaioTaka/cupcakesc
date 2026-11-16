@@ -1,6 +1,7 @@
 import json
 import uuid
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, session, url_for
 
@@ -8,11 +9,19 @@ from app.models.database import get_db
 from app.pricing import calculate_shipping_cents
 
 orders_bp = Blueprint("orders", __name__, url_prefix="/order")
+SAO_PAULO_TIMEZONE = ZoneInfo("America/Sao_Paulo")
 
 
 def format_brl(cents):
     amount = f"{cents / 100:,.2f}"
     return "R$ " + amount.replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def format_local_datetime(value):
+    created = datetime.fromisoformat(value)
+    if created.tzinfo is None:
+        created = created.replace(tzinfo=timezone.utc)
+    return created.astimezone(SAO_PAULO_TIMEZONE).strftime("%d/%m/%Y %H:%M")
 
 
 def cart_totals(items):
@@ -71,6 +80,7 @@ def history():
         }
         for row in rows:
             order = dict(row)
+            order["created_at_display"] = format_local_datetime(order["created_at"])
             current_status = order_progress(order["created_at"])
             if order["status"] != current_status:
                 db.execute("UPDATE orders SET status = ? WHERE id = ?", (current_status, order["id"]))
@@ -170,6 +180,8 @@ def track_order(order_id):
     ).fetchone()
     if order is None:
         abort(404)
+    order = dict(order)
+    order["created_at_display"] = format_local_datetime(order["created_at"])
 
     state = order_state(order["created_at"])
     status = state["status"]
@@ -190,6 +202,7 @@ def track_order(order_id):
     ).fetchall()]
 
     for previous in previous_orders:
+        previous["created_at_display"] = format_local_datetime(previous["created_at"])
         previous["total_display"] = format_brl(previous["total_cents"])
         previous["status_display"] = {
             "recebido": "Recebido",
@@ -233,6 +246,8 @@ def review_order(order_id):
     ).fetchone()
     if order is None:
         abort(404)
+    order = dict(order)
+    order["created_at_display"] = format_local_datetime(order["created_at"])
     if order_progress(order["created_at"]) != "entregue":
         abort(403)
 

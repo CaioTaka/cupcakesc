@@ -8,7 +8,7 @@
   <div class="orders-list">
     {% for order in orders %}
     <article class="order-history-card">
-      <div class="order-history-heading"><div><h2>Pedido #{{ order.id }}</h2><span class="muted">{{ order.created_at }}</span></div><span class="order-status-chip">{{ order.status_display }}</span></div>
+      <div class="order-history-heading"><div><h2>Pedido #{{ order.id }}</h2><span class="muted">{{ order.created_at_display }}</span></div><span class="order-status-chip">{{ order.status_display }}</span></div>
       <div class="order-history-footer"><strong>{{ order.total_display }} <small class="payment-method-label">· {{ order.payment_display }}</small></strong><div class="order-actions">{% if order.is_delivered %}<a class="secondary-button" href="{{ url_for('orders.review_order', order_id=order.id) }}">{% if order.evaluation_score %}Ver avaliação{% else %}Avaliar pedido{% endif %}</a>{% endif %}<a class="secondary-button" href="{{ url_for('orders.track_order', order_id=order.id) }}">Acompanhar pedido</a></div></div>
     </article>
     {% endfor %}
