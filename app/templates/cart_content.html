@@ -1,0 +1,48 @@
+{% if items %}
+<div class="cart-layout">
+  <div class="cart-lines">
+    {% for item in items %}
+    <article class="cart-line">
+      <div class="cart-item-main">
+        <div>
+          <h2>{{ item.name }}</h2>
+          {% if item.kind == "combo" %}
+          <p class="cart-flavors">{% for flavor in item.flavors %}{{ flavor.quantity }}× {{ flavor.name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+          <a class="edit-combo-link" href="{{ url_for('main.choose_combo', units=item.units, edit=loop.index0) }}">Editar sabores</a>
+          {% else %}
+          <p class="muted">Cupcake avulso</p>
+          {% endif %}
+          <span class="muted">{{ item.unit_price_display }} cada</span>
+        </div>
+        <strong>{{ item.line_total_display }}</strong>
+      </div>
+      <div class="cart-line-actions">
+        <div class="quantity-control compact-control">
+          <form action="{{ url_for('main.change_cart_item', item_index=loop.index0, action='decrease') }}" method="post" data-cart-update data-item-index="{{ loop.index0 }}" data-action="decrease"><button class="quantity-step" type="submit" aria-label="Diminuir quantidade">−</button></form>
+          <span>{{ item.quantity }}</span>
+          <form action="{{ url_for('main.change_cart_item', item_index=loop.index0, action='increase') }}" method="post" data-cart-update data-item-index="{{ loop.index0 }}" data-action="increase"><button class="quantity-step" type="submit" aria-label="Aumentar quantidade">+</button></form>
+        </div>
+        <form action="{{ url_for('main.change_cart_item', item_index=loop.index0, action='remove') }}" method="post" data-cart-update data-item-index="{{ loop.index0 }}" data-action="remove"><button class="remove-button" type="submit">Remover</button></form>
+      </div>
+    </article>
+    {% endfor %}
+    <form action="{{ url_for('main.clear_cart') }}" method="post"><button class="text-link clear-cart" type="submit">Limpar carrinho</button></form>
+  </div>
+
+  <aside class="order-summary">
+    <h2>Resumo do pedido</h2>
+    <div><span>Subtotal</span><strong>{{ subtotal_display }}</strong></div>
+    <div><span>Frete</span><strong>{{ shipping_display }}</strong></div>
+    <div class="summary-total"><span>Total</span><strong>{{ total_display }}</strong></div>
+    <p>Revise os itens e o frete antes de continuar.</p>
+    <a class="primary-button checkout-button" href="{{ url_for('orders.checkout') }}">Continuar para pagamento</a>
+  </aside>
+</div>
+{% else %}
+<div class="empty-cart">
+  <span aria-hidden="true">🧁</span>
+  <h2>Seu carrinho está vazio</h2>
+  <p>Escolha cupcakes avulsos ou personalize uma caixa de 6 ou 15.</p>
+  <a class="primary-button" href="{{ url_for('main.catalog') }}">Ver catálogo</a>
+</div>
+{% endif %}

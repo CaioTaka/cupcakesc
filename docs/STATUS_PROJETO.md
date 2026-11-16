@@ -1,22 +1,23 @@
 # Estado do projeto
 
-Atualizado em 9 de novembro de 2026.
+Atualizado em 16 de novembro de 2026.
 
 ## Onde o projeto está
 
 - O Cupcakes C está salvo localmente na pasta `CupcakesC`.
-- A MEP 9 foi aprovada pelo estudante. Inclui catálogo, combos editáveis no carrinho, checkout demonstrativo, registro local de pedidos, escolha da categoria de pagamento, acompanhamento sem recarga da página, histórico por navegador, navegação inferior e tema claro/escuro.
-- A etapa final de validação está em andamento. Os seis testes automatizados passaram na última execução.
-- O roteiro e o formulário para cinco avaliadores estão em `docs/testes`.
-- O formulário Word foi gerado a partir do modelo Markdown. A prévia visual automática não pôde ser feita neste ambiente porque LibreOffice não está instalado e a automação do Word foi bloqueada; abrir no Word e conferir a paginação antes de distribuir.
+- A versão funcional aprovada foi registrada no commit local `4f2cd55`.
+- As cinco avaliações por pares foram recebidas e consolidadas. A síntese e as decisões estão em `docs/testes/sintese_avaliacao_pares.md`.
+- Esta rodada implementa duas melhorias: controles de quantidade do carrinho sem recarga e identificação da conta por um atalho de perfil, em vez do quadro que parecia pesquisa.
+- O projeto mantém catálogo, combos editáveis, checkout demonstrativo, registro local de pedidos, acompanhamento do status, histórico por navegador, navegação inferior e tema claro/escuro.
+- O README registra que seis testes automatizados passaram na execução anterior. Eles não foram executados novamente nesta rodada.
 
 ## Próximas ações
 
-1. Convidar cinco colegas ou profissionais para testar o aplicativo.
-2. Reunir uma avaliação preenchida por pessoa e trazer as respostas para análise.
-3. Escolher e implementar as sugestões pertinentes; depois repetir os testes.
-4. Organizar as cinco avaliações e a síntese das alterações em PDF.
-5. Gravar o vídeo de apresentação conforme a duração pedida pelo tutor.
+1. Revisar as melhorias desta rodada e executar a validação local antes de publicar a versão atualizada.
+2. Criar o commit das melhorias e enviar os commits ao GitHub quando a autenticação do Git estiver disponível.
+3. Preparar a hospedagem permanente CADY em etapa separada; nenhuma configuração de hospedagem foi alterada nesta rodada.
+4. Atualizar a documentação final e anexar as cinco avaliações, respeitando a privacidade dos avaliadores.
+5. Entregar o vídeo gravado e confirmar com a tutoria a divergência entre “até cinco minutos” e “pelo menos cinco minutos”.
 
 ## Como os avaliadores podem acessar
 
@@ -40,4 +41,4 @@ Executar os testes automatizados:
 
 ## GitHub
 
-O remoto `origin` está configurado para `https://github.com/CaioTaka/cupcakesc.git`, mas o trabalho atual ainda não foi commitado nem enviado. Antes de publicar, revisar as alterações e o que será incluído no repositório.
+O remoto `origin` aponta para `https://github.com/CaioTaka/cupcakesc.git`. O commit inicial existe localmente, mas o envio ao GitHub ainda precisa ser concluído no terminal do usuário porque o gerenciador de credenciais não iniciou nesta sessão.

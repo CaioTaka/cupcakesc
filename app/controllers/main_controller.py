@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, redirect, render_template, request, session, url_for
+from flask import Blueprint, current_app, jsonify, redirect, render_template, request, session, url_for
 
 main_bp = Blueprint("main", __name__)
 
@@ -145,8 +145,7 @@ def add_single(flavor_id):
     return redirect(url_for("main.catalog"))
 
 
-@main_bp.get("/cart")
-def cart():
+def cart_context():
     items = get_cart()
     combos = current_app.config["COMBOS"]
     for item in items:
@@ -157,12 +156,17 @@ def cart():
             item["units"] = next((combo["units"] for combo in combos if combo["name"] == item["name"]), 0)
     subtotal = sum(item["line_total_cents"] for item in items)
     shipping = current_app.config["SHIPPING_CENTS"] if items else 0
-    return render_template(
-        "cart.html", items=items,
+    return {
+        "items": items,
         subtotal_display=format_brl(subtotal),
         shipping_display=format_brl(shipping),
         total_display=format_brl(subtotal + shipping),
-    )
+    }
+
+
+@main_bp.get("/cart")
+def cart():
+    return render_template("cart.html", **cart_context())
 
 
 @main_bp.post("/cart/change/<int:item_index>/<action>")
@@ -179,6 +183,17 @@ def change_cart_item(item_index, action):
         if cart_items[item_index]["quantity"] <= 0:
             cart_items.pop(item_index)
     session.modified = True
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        messages = {
+            "increase": "Quantidade aumentada.",
+            "decrease": "Quantidade reduzida.",
+            "remove": "Item removido do carrinho.",
+        }
+        return jsonify(
+            html=render_template("cart_content.html", **cart_context()),
+            cart_count=cart_count(),
+            message=messages.get(action, "Carrinho atualizado."),
+        )
     return redirect(url_for("main.cart"))
 
 

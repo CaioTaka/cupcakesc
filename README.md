@@ -50,6 +50,7 @@ Os testes usam um banco temporário, separado do banco local usado durante a dem
 - `docs/testes/roteiro_avaliacao_pares.md`: tarefas sugeridas para os avaliadores.
 - `docs/testes/formulario_avaliacao_pares.md`: formulário com espaço para cinco avaliações e a síntese das melhorias.
 - `docs/testes/formulario_avaliacao_pares.docx`: cópia editável em Word do formulário.
+- `docs/testes/sintese_avaliacao_pares.md`: pontos recebidos, decisões e melhorias desta rodada.
 - `docs/testes/acesso_remoto_temporario.md`: instruções para disponibilizar o app aos avaliadores por um endereço temporário.
 
 Para testes remotos temporários, pare o servidor local de desenvolvimento, instale as dependências atualizadas e use `run_remote.py` com o `cloudflared`. Isso mantém o banco SQLite no computador do estudante. O endereço do túnel funciona apenas enquanto os dois processos e o computador permanecerem ativos.

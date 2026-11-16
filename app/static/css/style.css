@@ -35,11 +35,11 @@ h2 { font-size: 1.5rem; margin: .5rem 0 .8rem; letter-spacing: -.02em; }
 .welcome-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.5rem; }
 .welcome-heading h1 { font-size: clamp(2rem, 5vw, 3rem); }
 .text-link { color: var(--pink-dark); font-size: .9rem; }
-.account-demo { display: flex; align-items: center; gap: .7rem 1rem; flex-wrap: wrap; background: #fff2f6; border: 1px solid #f4d6e1; border-radius: .75rem; padding: .8rem 1rem; margin-bottom: 2rem; color: #84777d; font-size: .85rem; }
-.account-demo .demo-label { color: #a39098; }
-.demo-account-name { color: #777076; font-weight: 700; }
-.demo-account-email { color: #8d8388; }
-.account-note { width: 100%; color: #9a9095; font-size: .78rem; }
+.welcome-actions { display: flex; align-items: center; gap: 1rem; }
+.profile-shortcut { display: inline-flex; align-items: center; gap: .45rem; padding: .45rem .65rem; border: 1px solid var(--line); border-radius: 999px; color: #71666c; font-size: .85rem; font-weight: 700; text-decoration: none; }
+.profile-shortcut svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.profile-shortcut:hover { border-color: #e9aac1; background: #fff2f6; color: var(--pink-dark); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .menu-section { margin: 2rem 0; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 1rem; }
 .section-heading h2 { font-size: 1.65rem; margin-bottom: 0; }
@@ -59,6 +59,7 @@ footer { padding: 1.2rem; }
   .login-layout { grid-template-columns: 1fr; gap: 1.5rem; }
   .login-card { max-width: 540px; }
   .welcome-heading { align-items: flex-start; flex-direction: column; }
+  .welcome-actions { width: 100%; justify-content: space-between; }
   .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .product-art { min-height: 110px; }
 }
@@ -312,9 +313,10 @@ html[data-theme="dark"] .secondary-button { border-color: #51454c; background: #
 html[data-theme="dark"] .account-choice:hover,
 html[data-theme="dark"] .secondary-button:hover { background: #35282f; }
 html[data-theme="dark"] .notice,
-html[data-theme="dark"] .account-demo,
 html[data-theme="dark"] .countdown-box,
 html[data-theme="dark"] .selection-counter { border-color: #583341; background: #302229; color: #eee1e7; }
+html[data-theme="dark"] .profile-shortcut { border-color: #51454c; color: #d7cbd1; }
+html[data-theme="dark"] .profile-shortcut:hover { border-color: #c9577d; background: #34252c; color: #ff93b6; }
 html[data-theme="dark"] .product-art,
 html[data-theme="dark"] .flavor-card img { background: linear-gradient(140deg, #35262e, #4a2c3a); }
 html[data-theme="dark"] .flavor-quantity { border-color: #55444c; background: #292428; color: #f4edf1; }
