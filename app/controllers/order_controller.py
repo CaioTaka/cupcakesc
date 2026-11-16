@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, session, url_for
 
 from app.models.database import get_db
+from app.pricing import calculate_shipping_cents
 
 orders_bp = Blueprint("orders", __name__, url_prefix="/order")
 
@@ -16,7 +17,7 @@ def format_brl(cents):
 
 def cart_totals(items):
     subtotal = sum(item["unit_price_cents"] * item["quantity"] for item in items)
-    shipping = current_app.config["SHIPPING_CENTS"] if items else 0
+    shipping = calculate_shipping_cents(subtotal) if items else 0
     return subtotal, shipping, subtotal + shipping
 
 
@@ -102,7 +103,7 @@ def checkout():
         "checkout.html",
         items=display_items,
         subtotal_display=format_brl(subtotal),
-        shipping_display=format_brl(shipping),
+        shipping_display="Grátis" if shipping == 0 else format_brl(shipping),
         total_display=format_brl(total),
         pickup_address=current_app.config["PICKUP_ADDRESS"],
         delivery_address=current_app.config["DELIVERY_ADDRESS"],
@@ -263,6 +264,7 @@ def review_order(order_id):
         items=items,
         total_display=format_brl(order["total_cents"]),
         payment_display={"credit": "Crédito", "debit": "Débito", "pix": "Pix"}.get(order["payment_method"], "Não informado"),
+        delivery_address=current_app.config["DELIVERY_ADDRESS"],
         error=error,
     )
 

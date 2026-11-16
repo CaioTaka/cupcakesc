@@ -14,11 +14,11 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; back
 .topbar { display: flex; justify-content: space-between; align-items: center; padding: .65rem clamp(1rem, 5vw, 4rem); border-bottom: 1px solid var(--line); background: #fff; }
 .brand-group { display: flex; align-items: center; gap: .55rem; }
 .brand { display: inline-flex; align-items: center; color: var(--pink); text-decoration: none; }
-.brand img { display: block; width: 86px; height: 56px; object-fit: contain; border-radius: .4rem; }
-.back-button { display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--pink-dark); cursor: pointer; }
-.back-button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.brand img { display: block; width: 46px; height: 46px; object-fit: contain; }
+.back-button { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--pink-dark); cursor: pointer; }
+.back-button svg { display: block; width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .back-button:hover { background: var(--pink-soft); }
-.brand-logo-hero { display: block; width: min(230px, 60vw); height: 230px; margin: 0 0 1rem; object-fit: contain; border-radius: .8rem; }
+.brand-logo-hero { display: block; width: min(210px, 52vw); height: min(210px, 52vw); margin: 0 0 .75rem; object-fit: contain; }
 .demo-label { color: #8c7c83; font-size: .7rem; letter-spacing: .08em; }
 .page { width: min(100% - 2rem, 1050px); margin: auto; padding: 2.5rem 0; }
 .login-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); gap: clamp(2rem, 7vw, 6rem); align-items: center; }
@@ -52,6 +52,8 @@ h2 { font-size: 1.5rem; margin: .5rem 0 .8rem; letter-spacing: -.02em; }
 .section-hint { color: #9b8b92; font-size: .82rem; }
 .product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 .product-card { overflow: hidden; border: 1px solid var(--line); border-radius: .8rem; background: #fff; box-shadow: 0 .5rem 1.5rem #68263b0b; }
+.product-card-added { scroll-margin-top: 1rem; border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-soft), 0 .5rem 1.5rem #68263b16; }
+.added-badge { display: inline-flex; align-items: center; gap: .25rem; margin: .45rem 0 -.2rem; padding: .32rem .55rem; border-radius: 999px; background: var(--pink-soft); color: var(--pink-dark); font-size: .76rem; font-weight: 700; }
 .product-art { display: grid; place-items: center; min-height: 130px; background: linear-gradient(140deg, #fff0f5, #ffe0eb); font-size: 3.6rem; }
 .combo-art { min-height: 150px; font-size: 4rem; }
 .product-copy { padding: 1rem; }
@@ -292,6 +294,8 @@ body:has(.bottom-nav) { padding-bottom: 5.4rem; }
 .review-order-summary { margin: 1rem 0; }
 .review-summary-heading { display: flex; justify-content: space-between; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid var(--line); color: var(--muted); }
 .review-summary-heading strong { color: inherit; text-align: right; }
+.review-address { align-items: flex-start; flex-direction: column; gap: .25rem; }
+.review-address strong { text-align: left; }
 .review-order-summary h2 { margin: 1.1rem 0 .35rem; }
 .review-form { display: grid; gap: 1rem; }
 .star-rating { margin: 0; padding: 0; border: 0; }
@@ -357,6 +361,8 @@ html[data-theme="dark"] .profile-shortcut { border-color: #51454c; color: #d7cbd
 html[data-theme="dark"] .profile-shortcut:hover { border-color: #c9577d; background: #34252c; color: #ff93b6; }
 html[data-theme="dark"] .product-art,
 html[data-theme="dark"] .flavor-card img { background: linear-gradient(140deg, #35262e, #4a2c3a); }
+html[data-theme="dark"] .product-card-added { border-color: var(--pink); box-shadow: 0 0 0 3px #583341, 0 .5rem 1.5rem #0003; }
+html[data-theme="dark"] .added-badge { background: #3a252e; color: #ff93b6; }
 html[data-theme="dark"] .flavor-quantity { border-color: #55444c; background: #292428; color: #f4edf1; }
 html[data-theme="dark"] .quantity-step { border-color: #684655; background: #30242a; color: #ff86ad; }
 html[data-theme="dark"] .quantity-step:hover { background: #48303a; }

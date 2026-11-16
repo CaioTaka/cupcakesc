@@ -8,6 +8,7 @@
 
   <section class="checkout-card review-order-summary" aria-label="Resumo do pedido">
     <div class="review-summary-heading"><span>Data do pedido</span><strong>{{ order.created_at }}</strong></div>
+    <div class="review-summary-heading review-address"><span>Endereço de entrega</span><strong>{{ delivery_address }}</strong></div>
     <div class="review-summary-heading"><span>Valor</span><strong>{{ total_display }}</strong></div>
     <div class="review-summary-heading"><span>Forma de pagamento</span><strong>{{ payment_display }}</strong></div>
     <h2>Itens do pedido</h2>

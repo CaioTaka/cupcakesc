@@ -100,6 +100,32 @@ class CupcakesAppTests(unittest.TestCase):
         self.assertEqual(progress.status_code, 200)
         self.assertIn("stage", progress.get_json())
 
+    def test_shipping_tiers_are_consistent_in_cart_and_checkout(self):
+        cases = [
+            (5000, "R$ 15,00"),
+            (5001, "R$ 5,00"),
+            (15000, "Grátis"),
+        ]
+        for subtotal, expected_shipping in cases:
+            with self.subTest(subtotal=subtotal):
+                item = self.demo_single()
+                item["unit_price_cents"] = subtotal
+                self.set_cart(self.client, [item])
+
+                cart = self.client.get("/cart")
+                checkout = self.client.get("/order/checkout")
+                self.assertIn(expected_shipping, cart.get_data(as_text=True))
+                self.assertIn(expected_shipping, checkout.get_data(as_text=True))
+
+    def test_adding_single_cupcake_returns_to_selected_card(self):
+        response = self.client.post("/cart/add/oreo")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers["Location"], "/catalog?adicionado=oreo#cupcake-oreo")
+
+        catalog = self.client.get("/catalog?adicionado=oreo")
+        self.assertIn('id="cupcake-oreo"', catalog.get_data(as_text=True))
+        self.assertIn("Adicionado ao carrinho", catalog.get_data(as_text=True))
+
     def test_profile_has_accessible_theme_switch(self):
         profile = self.client.get("/profile")
         self.assertEqual(profile.status_code, 200)

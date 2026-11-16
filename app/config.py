@@ -18,7 +18,10 @@ class Config:
     ORDER_AUTO_ACCEPT_SECONDS = 5
     PREPARATION_SECONDS = 15
     DELIVERY_ESTIMATE_SECONDS = 30
-    SHIPPING_CENTS = 1500
+    SHIPPING_UP_TO_50_CENTS = 1500
+    SHIPPING_OVER_50_CENTS = 500
+    SHIPPING_REDUCED_FROM_CENTS = 5000
+    FREE_SHIPPING_FROM_CENTS = 15000
 
     # Catálogo e preços ficam centralizados aqui para facilitar alterações.
     COMBOS = [

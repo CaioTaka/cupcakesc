@@ -1,5 +1,7 @@
 from flask import Blueprint, current_app, jsonify, redirect, render_template, request, session, url_for
 
+from app.pricing import calculate_shipping_cents
+
 main_bp = Blueprint("main", __name__)
 
 
@@ -36,7 +38,10 @@ def catalog():
     cupcakes = current_app.config["CUPCAKES"]
     for item in combos + cupcakes:
         item["price_display"] = format_brl(item["price_cents"])
-    return render_template("catalog.html", combos=combos, cupcakes=cupcakes)
+    added_flavor = request.args.get("adicionado")
+    if added_flavor not in {item["id"] for item in cupcakes}:
+        added_flavor = None
+    return render_template("catalog.html", combos=combos, cupcakes=cupcakes, added_flavor=added_flavor)
 
 
 @main_bp.get("/profile")
@@ -142,7 +147,8 @@ def add_single(flavor_id):
             "unit_price_cents": cupcake["price_cents"],
         })
     session.modified = True
-    return redirect(url_for("main.catalog"))
+    destination = url_for("main.catalog", adicionado=flavor_id)
+    return redirect(destination + f"#cupcake-{flavor_id}")
 
 
 def cart_context():
@@ -155,11 +161,11 @@ def cart_context():
         if item["kind"] == "combo":
             item["units"] = next((combo["units"] for combo in combos if combo["name"] == item["name"]), 0)
     subtotal = sum(item["line_total_cents"] for item in items)
-    shipping = current_app.config["SHIPPING_CENTS"] if items else 0
+    shipping = calculate_shipping_cents(subtotal) if items else 0
     return {
         "items": items,
         "subtotal_display": format_brl(subtotal),
-        "shipping_display": format_brl(shipping),
+        "shipping_display": "Grátis" if shipping == 0 and items else format_brl(shipping),
         "total_display": format_brl(subtotal + shipping),
     }
 

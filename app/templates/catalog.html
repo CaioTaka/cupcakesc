@@ -45,7 +45,7 @@
     </div>
     <div class="product-grid">
       {% for item in cupcakes %}
-      <article class="product-card">
+      <article id="cupcake-{{ item.id }}" class="product-card {% if added_flavor == item.id %}product-card-added{% endif %}">
         <div class="product-art">
           <img class="product-photo" src="{{ url_for('static', filename='images/' + item.image) }}" alt="Cupcake de {{ item.name }}">
         </div>
@@ -53,6 +53,7 @@
           <h3>{{ item.name }}</h3>
           <p>Unidade avulsa</p>
           <strong class="price">{{ item.price_display }}</strong>
+          {% if added_flavor == item.id %}<span class="added-badge" role="status">✓ Adicionado ao carrinho</span>{% endif %}
           <form action="{{ url_for('main.add_single', flavor_id=item.id) }}" method="post">
             <button class="primary-button product-action" type="submit">Adicionar ao carrinho</button>
           </form>
