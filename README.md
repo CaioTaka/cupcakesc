@@ -1,71 +1,49 @@
 # Cupcakes C
 
-Aplicação web demonstrativa desenvolvida para o Projeto Integrador Transdisciplinar II.
+Aplicação web demonstrativa criada para o Projeto Integrador Transdisciplinar em Engenharia de Software II. O projeto apresenta um fluxo de pedido de cupcakes, do catálogo ao acompanhamento, e registra as melhorias feitas após avaliação por colegas.
 
-## Estado atual
+**Aplicação publicada:** https://takacaio.pythonanywhere.com/
 
-A tela de entrada simula uma autenticação sem chamar o Google e sem pedir e-mail ou senha. O catálogo inicial usa os produtos e valores apresentados no protótipo do Projeto Integrador I. O projeto usa Flask e SQLite local.
+## O que dá para demonstrar
 
-A aplicação é apenas uma demonstração acadêmica: não solicita dados pessoais reais, não processa pagamentos reais e não solicita localização. O pedido demonstrativo guarda um nome fixo, um resumo do pedido e a categoria de pagamento para mostrar o histórico. Depois da entrega, é possível registrar uma nota de 1 a 5 e um comentário opcional para cada pedido.
+- Catálogo com cupcakes avulsos e combos de 6 e 15 unidades.
+- Montagem e edição de sabores dos combos.
+- Carrinho, faixas de frete e checkout demonstrativo.
+- Acompanhamento de pedido, histórico por sessão do navegador e avaliação após a entrega.
+- Perfil com dados fixos de demonstração e preferência de tema claro/escuro.
 
-## Estrutura
+A entrada não autentica com o Google. Não há cobrança, dados bancários, localização ou endereço real do cliente. Endereços, método de pagamento e chave Pix são exemplos fixos.
 
-- app/controllers: rotas e fluxo da aplicação
-- app/models: acesso e inicialização do banco SQLite
-- app/templates: páginas HTML
-- app/static: CSS e outros arquivos estáticos
-- app/config.py: valores de demonstração e catálogo editáveis
-- instance: banco local criado durante a execução (ignorado pelo Git)
+## Tecnologias
 
-## Preparar e executar no Windows
+Python 3.13, Flask, SQLite, HTML, CSS e JavaScript. O código separa as rotas e o fluxo de controle, os modelos de acesso ao banco e os templates das telas.
 
-Abra o terminal do VS Code dentro da pasta do projeto e rode os comandos, um por vez:
+## Rodar no Windows
 
-1. Criar o ambiente virtual:
-   py -3.13 -m venv .venv
-2. Ativar:
-   .\.venv\Scripts\Activate.ps1
-3. Instalar dependências:
-   python -m pip install -r requirements.txt
-4. Iniciar:
-   python run.py
+Com Python 3.13 instalado, abra o terminal na pasta do projeto e execute, um comando por vez:
 
-Depois, abra http://127.0.0.1:5000 no navegador.
+```powershell
+py -3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python run.py
+```
 
-Se o PowerShell bloquear a ativação, não altere a política do computador; avise para seguirmos sem ativar o ambiente.
-
-## Testes automatizados
-
-Com o ambiente virtual pronto, execute no terminal do VS Code:
+Acesse http://127.0.0.1:5000. Para executar os testes automatizados:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-Os testes usam um banco temporário, separado do banco local usado durante a demonstração.
-Última execução nesta etapa: 6 testes aprovados.
+Na execução registrada em 16/11/2026, os oito testes passaram. O banco local é criado em `instance/cupcakesc.sqlite3`; os testes usam um banco temporário.
 
-## Avaliação por colegas
+## Documentação do projeto
 
-- `docs/testes/roteiro_avaliacao_pares.md`: tarefas sugeridas para os avaliadores.
-- `docs/testes/formulario_avaliacao_pares.md`: formulário com espaço para cinco avaliações e a síntese das melhorias.
-- `docs/testes/formulario_avaliacao_pares.docx`: cópia editável em Word do formulário.
-- `docs/testes/sintese_avaliacao_pares.md`: pontos recebidos, decisões e melhorias desta rodada.
-- `docs/testes/acesso_remoto_temporario.md`: instruções para disponibilizar o app aos avaliadores por um endereço temporário.
+- `docs/MANUAL_USO_CUPCAKESC.md`: roteiro rápido para usar o aplicativo.
+- `docs/engenharia/Documentacao_Tecnica_Atualizada_CupcakesC.pdf`: escopo técnico, diagramas e modelos de dados.
+- `docs/engenharia/Dicionario_Dados_CupcakesC.pdf`: campos da tabela SQLite atual e proposta lógica separada.
+- `docs/engenharia/Especificacao_IHC_CupcakesC.pdf`: fluxo, telas e interações.
+- `docs/testes/Laudo_Testes_Automatizados_CupcakesC.pdf`: execução e resultado dos testes.
+- `docs/testes/sintese_avaliacao_pares.md`: síntese anônima dos comentários e decisões sobre melhorias.
 
-Para testes remotos temporários, pare o servidor local de desenvolvimento, instale as dependências atualizadas e use `run_remote.py` com o `cloudflared`. Isso mantém o banco SQLite no computador do estudante. O endereço do túnel funciona apenas enquanto os dois processos e o computador permanecerem ativos.
-
-## Tema
-
-O tema claro é o padrão. A preferência entre claro e escuro é escolhida no Perfil e fica salva localmente no navegador.
-
-## Navegação
-
-Após entrar, a barra inferior oferece acesso ao Catálogo, Meus pedidos, Carrinho e Perfil. O histórico de pedidos é filtrado pelo navegador usado no teste.
-## Fluxo de seleção e carrinho
-
-O catálogo permite adicionar cupcakes avulsos ou escolher a quantidade de cada sabor para completar as caixas de 6 e 15. O carrinho fica na sessão local do navegador, sem nome ou e-mail; cada navegador de teste mantém seu próprio carrinho.
-
-Os valores de produtos, frete demonstrativo e tempos podem ser alterados em app/config.py. A finalização simulada grava apenas um resumo demonstrativo do pedido no SQLite local; não salva dados de pagamento nem localização. O identificador de sessão do navegador separa o histórico de cada perfil de navegador usado nos testes.
-
-Na tela de checkout, os endereços e formas de pagamento são ilustrativos. A chave `cupcakesc123` é fictícia e serve somente para demonstrar a cópia do texto; não há QR Code nem integração Pix. O pedido guarda apenas a categoria selecionada (Crédito, Débito ou Pix), sem dados financeiros. Os estados avançam automaticamente, com consulta em segundo plano para evitar recarregar a página. A configuração atual usa 15 segundos de preparo e 30 segundos para a etapa de entrega. As imagens de preparo e entrega concluída são ilustrativas; `demo-entrega.png` representa a etapa “saiu para entrega”.
+A pasta `docs/testes` também contém o formulário e o roteiro usados na rodada de avaliação por pares.

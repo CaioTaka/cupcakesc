@@ -1,45 +1,46 @@
 # Estado do projeto
 
-Atualizado em 16 de novembro de 2026.
+Atualizado em 17 de novembro de 2026.
 
-## Onde o projeto está
+## Versão atual
 
-- O Cupcakes C está salvo localmente na pasta `CupcakesC`.
-- A versão de referência e a rodada de feedback estão publicadas em `main` até o commit `8774ba1`.
-- As cinco avaliações por pares foram recebidas e consolidadas. A síntese e as decisões estão em `docs/testes/sintese_avaliacao_pares.md`.
-- A rodada publicada inclui controles de quantidade do carrinho sem recarga e identificação da conta por um atalho de perfil, em vez do quadro que parecia pesquisa.
-- A rodada local em andamento acrescenta imagens específicas para preparo e entrega concluída, logo do protótipo, avaliação individual de pedidos, dados fixos de endereço e cartão no Perfil, retorno à tela anterior e prazos de 15 s para preparo e 30 s para entrega.
-- O projeto mantém catálogo, combos editáveis, checkout demonstrativo, registro local de pedidos, acompanhamento do status, histórico por navegador, navegação inferior e tema claro/escuro.
-- O README registra que seis testes automatizados passaram na execução anterior. Eles não foram executados novamente nesta rodada.
+O Cupcakes C está publicado em https://takacaio.pythonanywhere.com/ e pode ser acessado por HTTPS. A aplicação foi conferida no computador e no celular. A hospedagem é o PythonAnywhere, em conta gratuita Beginner.
 
-## Próximas ações
+A versão publicada oferece catálogo de cupcakes e combos, carrinho com edição de sabores, checkout de demonstração, acompanhamento do pedido, histórico por sessão de navegador, avaliação por pedido, perfil e tema claro/escuro. O horário dos pedidos é exibido no fuso de São Paulo, no formato DD/MM/AAAA HH:MM.
 
-1. Conferir o fluxo atualizado no navegador e corrigir qualquer problema visual ou funcional encontrado.
-2. Executar a validação local antes de criar um novo commit; depois revisar o diff e publicar quando o estudante autorizar.
-3. Preparar a hospedagem permanente CADY em etapa separada, considerando persistência do SQLite e configuração segura do Flask.
-4. Atualizar a documentação final e anexar as cinco avaliações, respeitando a privacidade dos avaliadores.
-5. Confirmar com a tutoria a divergência entre “até cinco minutos” e “pelo menos cinco minutos” para o vídeo.
+Os limites da demonstração permanecem claros: a conta, os endereços e os pagamentos são fictícios; não há cobrança, autenticação Google, coleta de localização nem rastreamento real.
 
-## Como os avaliadores podem acessar
+## Avaliação e qualidade
 
-O servidor atual é local: `http://127.0.0.1:5000`. Ele só abre no computador em que o Flask está rodando. A opção mais simples é fazer os cinco testes presencialmente nesse computador, em momentos separados, usando um perfil de navegador diferente por avaliador. Para avaliação remota, será necessário preparar uma hospedagem ou outro acesso de rede antes de compartilhar um endereço.
+Cinco colegas testaram o fluxo em 09/11/2026. As observações e decisões estão documentadas em `docs/testes/sintese_avaliacao_pares.md`. Entre as melhorias adotadas estão editar combos no carrinho, preservar a posição da tela ao atualizar quantidades, diferenciar as formas de pagamento de demonstração, rever mensagens e ilustrações e permitir avaliar o pedido entregue. Busca no catálogo, avaliação pública por sabor e compartilhamento da entrega ficaram fora do escopo desta versão.
 
-Envie uma cópia do formulário Word para cada avaliador e peça que devolvam a cópia preenchida. Também pode imprimir o formulário. Cada avaliador deve registrar nome, data, o que funcionou, o que falhou e o que não conseguiu testar, com o motivo. Capturas de tela são opcionais; não devem conter senha nem dados financeiros.
+A suíte automatizada foi executada localmente em 16/11/2026: 8 testes aprovados. O laudo registra o comando, a versão do código e o ambiente usados.
 
-## Comandos úteis
+## Documentação disponível
 
-Iniciar o aplicativo no PowerShell, dentro da pasta do projeto:
+- Manual rápido de uso em `docs/MANUAL_USO_CUPCAKESC.md`.
+- Diagramas UML, arquitetura e modelos de dados em `docs/engenharia/Documentacao_Tecnica_Atualizada_CupcakesC.pdf`.
+- Dicionário da tabela SQLite atual em `docs/engenharia/Dicionario_Dados_CupcakesC.pdf`.
+- Especificação de IHC em `docs/engenharia/Especificacao_IHC_CupcakesC.pdf`.
+- Síntese anônima dos testes por pares e laudo automatizado em `docs/testes/`.
+
+O formulário preenchido com identificação dos avaliadores e os vídeos são mantidos nos materiais de submissão da disciplina; a síntese pública do repositório não expõe nomes dos colegas.
+
+## Rodar localmente
+
+No Windows, com Python 3.13 instalado, execute na pasta do projeto:
 
 ```powershell
-.\.venv\Scripts\python.exe run.py
+py -3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python run.py
 ```
 
-Executar os testes automatizados:
+Acesse http://127.0.0.1:5000. Para executar os testes:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-## GitHub
-
-O remoto `origin` aponta para `https://github.com/CaioTaka/cupcakesc.git`. Os commits `4f2cd55` e `8774ba1` estão publicados em `main`. As mudanças desta rodada permanecem locais até serem revisadas e autorizadas para publicação.
+O banco SQLite local é criado em `instance/cupcakesc.sqlite3`. O arquivo é ignorado pelo Git. A hospedagem possui seu próprio banco; registros entre ambientes não são sincronizados.

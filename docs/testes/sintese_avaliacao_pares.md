@@ -16,7 +16,7 @@ Os avaliadores relataram que conseguiram navegar pelo catálogo, montar combos e
 | O fluxo do combo não deixava claro que era possível incluir outros itens. | **Já atendido:** depois de configurar um combo, o carrinho oferece “Continuar comprando” para voltar ao catálogo e adicionar cupcakes avulsos ou outro combo. |
 | As etapas do pedido poderiam avançar mais rápido em uma demo. | **Ajustado nesta rodada:** os tempos atuais são 5 s para aceitação, 15 s para preparo e 30 s de previsão de entrega. |
 | Foram sugeridas imagens diferentes para os estados do pedido. | **Adotado nesta rodada:** uma ilustração representa o preparo, a imagem existente continua em “saiu para entrega” e uma nova ilustração representa a entrega concluída. |
-| Busca no catálogo e avaliações de produtos. | **Adiado:** são recursos adicionais, não necessários para o escopo demonstrativo atual. Podem ser considerados em uma evolução futura. |
+| Busca no catálogo e avaliações públicas por sabor. | **Não implementadas nesta versão.** Foi criada a avaliação individual do pedido, mas não a publicação de notas para cada sabor. A busca permanece fora do escopo priorizado. |
 | Compartilhar a entrega com outra pessoa. | **Adiado:** exigiria um fluxo de destinatário e compartilhamento, ampliando o escopo e a quantidade de dados tratados. O projeto mantém endereços fixos e não coleta dados de terceiros. |
 
 ## Resultado desta rodada
